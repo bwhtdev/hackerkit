@@ -1,0 +1,54 @@
+---
+
+import Nav from '@components/Nav.astro';
+
+import SignUpModal from '@components/SignUpModal.astro';
+import LogInModal from '@components/LogInModal.astro';
+import CreateMessageModal from '@components/CreateMessageModal.astro';
+import EditMessageModal from '@components/EditMessageModal.astro';
+import DeleteMessageModal from '@components/DeleteMessageModal.astro';
+
+import Toast from '@components/Toast.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body
+		x-data="{ username: '', password: '', messageId: '', messageText: '', title: 'Default Toast Notification', description: '', type: 'success', position: 'top-right', expanded: false, popToast (custom) { let html = ''; if (typeof custom != 'undefined') { html = custom; } toast(this.title, { description: this.description, type: this.type, position: this.position, html: html }) } }"
+		@keydown.escape.window="$store.modalOpen = false"
+    :class="{ 'z-40': $store.modalOpen }"
+    x-init=" window.toast = function(message, options = {}) { let description = ''; let type = 'success'; let position = 'bottom-right'; let html = ''; if (typeof options.description != 'undefined') description = options.description; if (typeof options.type != 'undefined') type = options.type; if (typeof options.position != 'undefined') position = options.position; if (typeof options.html != 'undefined') html = options.html; window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }})); }">
+
+		<Nav />
+
+		<main class='mx-auto min-h-full max-w-4xl py-16 sm:px-16'>				
+			<slot />
+		</main>
+		
+		<SignUpModal />
+		<LogInModal />
+		<CreateMessageModal />
+		<EditMessageModal />
+		<DeleteMessageModal />
+
+		<Toast />
+
+		<script src='../alpine/base.ts'></script>
+	</body>
+</html>
+<style is:global>
+</style>

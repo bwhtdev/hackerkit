@@ -1,0 +1,4 @@
+db/password.txt
+.DS_Store
+*/.env
+.env

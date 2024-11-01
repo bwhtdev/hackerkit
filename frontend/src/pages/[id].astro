@@ -1,0 +1,15 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Message from '@components/Message.svelte';
+
+const { id } = Astro.params;
+---
+
+<Layout title={`Message ${id}`}>
+  <a href='/'>Back</a>
+
+  <Message
+    client:load
+    id={id}
+  />
+</Layout>
