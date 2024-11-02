@@ -2,12 +2,7 @@
 
 import Nav from '@components/Nav.astro';
 
-import SignUpModal from '@components/SignUpModal.astro';
-import LogInModal from '@components/LogInModal.astro';
-import CreateMessageModal from '@components/CreateMessageModal.astro';
-import EditMessageModal from '@components/EditMessageModal.astro';
-import DeleteMessageModal from '@components/DeleteMessageModal.astro';
-
+import Modals from '@components/Modals.astro';
 import Toast from '@components/Toast.astro';
 
 interface Props {
@@ -25,30 +20,29 @@ const { title } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+    <title>{title}</title>
+
+    <style is:global>
+      body {
+        @apply bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400;
+      }
+    </style>
 	</head>
 	<body
-		x-data="{ username: '', password: '', messageId: '', messageText: '', title: 'Default Toast Notification', description: '', type: 'success', position: 'top-right', expanded: false, popToast (custom) { let html = ''; if (typeof custom != 'undefined') { html = custom; } toast(this.title, { description: this.description, type: this.type, position: this.position, html: html }) } }"
+    x-data="{ username: '', password: '', messageId: '', messageText: '', darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), title: 'Default Toast Notification', description: '', type: 'success', position: 'top-right', expanded: false, popToast (custom) { let html = ''; if (typeof custom != 'undefined') { html = custom; } toast(this.title, { description: this.description, type: this.type, position: this.position, html: html }) } }"
 		@keydown.escape.window="$store.modalOpen = false"
-    :class="{ 'z-40': $store.modalOpen }"
-    x-init=" window.toast = function(message, options = {}) { let description = ''; let type = 'success'; let position = 'bottom-right'; let html = ''; if (typeof options.description != 'undefined') description = options.description; if (typeof options.type != 'undefined') type = options.type; if (typeof options.position != 'undefined') position = options.position; if (typeof options.html != 'undefined') html = options.html; window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }})); }">
+    :class="{ 'z-40': $store.modalOpen, 'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) }"
+    x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val)); window.toast = function(message, options = {}) { let description = ''; let type = 'success'; let position = 'bottom-right'; let html = ''; if (typeof options.description != 'undefined') description = options.description; if (typeof options.type != 'undefined') type = options.type; if (typeof options.position != 'undefined') position = options.position; if (typeof options.html != 'undefined') html = options.html; window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }})); }">
 
 		<Nav />
 
 		<main class='mx-auto min-h-full max-w-4xl py-16 sm:px-16'>				
 			<slot />
 		</main>
-		
-		<SignUpModal />
-		<LogInModal />
-		<CreateMessageModal />
-		<EditMessageModal />
-		<DeleteMessageModal />
 
+    <Modals />
 		<Toast />
 
 		<script src='../alpine/base.ts'></script>
 	</body>
 </html>
-<style is:global>
-</style>

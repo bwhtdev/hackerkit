@@ -1,0 +1,18 @@
+---
+const { placeholder } = Astro.props;
+---
+
+<div class="w-full max-w-xs mx-auto">
+  <textarea x-data="{ 
+        resize () { 
+            $el.style.height = '0px'; 
+            $el.style.height = $el.scrollHeight + 'px' 
+        } 
+    }"
+    x-init="resize()"
+    @input="resize()"
+    x-model='messageText'
+    placeholder={placeholder} 
+    class="flex w-full h-auto min-h-[80px] px-3 py-2 text-sm bg-white dark:bg-slate-700 border rounded-md border-slate-300 dark:border-slate-400 ring-offset-background placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-300 dark:focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 dark:focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50"
+  ></textarea>
+</div>
