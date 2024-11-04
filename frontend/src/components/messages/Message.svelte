@@ -1,10 +1,10 @@
 <script lang='ts'> 
   let { id } = $props();
 
-  import EditMessageBtn from './EditMessageBtn.svelte';
-  import DeleteMessageBtn from './DeleteMessageBtn.svelte';
+  import EditMessageBtn from '../btns/EditMessageBtn.svelte';
+  import DeleteMessageBtn from '../btns/DeleteMessageBtn.svelte';
 
-  import { loggedIn, username } from './authStore';
+  import { loggedIn, username } from '@components/authStore';
 
   interface Message {
     id: string;

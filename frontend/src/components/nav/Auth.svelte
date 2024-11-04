@@ -1,14 +1,14 @@
 <script lang='ts'>
-  import SignUpBtn from './SignUpBtn.svelte';
-  import LogInBtn from './LogInBtn.svelte';
-  import CreateMessageBtn from './CreateMessageBtn.svelte';
+  import SignUpBtn from '../btns/SignUpBtn.svelte';
+  import LogInBtn from '../btns/LogInBtn.svelte';
+  import CreateMessageBtn from '../btns/CreateMessageBtn.svelte';
 
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
 
   import { username, loggedIn } from '@components/authStore';
   
-  import { isLoggedIn, logOut, getUsername } from '../alpine/authUtils';
+  import { isLoggedIn, logOut, getUsername } from '../../utils/authUtils';
   
   onMount(() => {
     loggedIn.set(isLoggedIn());

@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { setToken, getToken, getUsername, setUsername } from './authUtils';
-import { addNewMessage, updateMessage, removeMessage } from '@components/messageStore';
+import { addNewMessage, updateMessage, removeMessage } from '@components/messages/messageStore';
 import { username, loggedIn } from '@components/authStore';
 
 document.addEventListener('alpine:init', () => {
