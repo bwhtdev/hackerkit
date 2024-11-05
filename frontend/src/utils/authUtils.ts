@@ -11,9 +11,13 @@
  * * getUsername(): string
  * * setUsername(string)
  * * clearUsername()
+ *
+ * * getName(): string
+ * * setName(string)
+ * * clearName()
  */
 
-import { username, loggedIn } from '@components/authStore';
+import { username, name, loggedIn } from '@components/authStore';
 
 export function isLoggedIn(): boolean {
   const c = document.cookie;
@@ -22,6 +26,7 @@ export function isLoggedIn(): boolean {
     if (part.trim().startsWith('BEARER_TOKEN=') || part.trim().startsWith('USERNAME=')) {
       loggedIn.set(true);
       username.set(getUsername());
+      name.set(getName());
       return true;
     }
   loggedIn.set(false);
@@ -31,6 +36,7 @@ export function isLoggedIn(): boolean {
 export function logOut() {
   eraseToken();
   eraseUsername();
+  eraseName();
   loggedIn.set(false);
 }
 
@@ -80,4 +86,28 @@ export function getUsername(): string | null {
 
 export function eraseUsername() {   
   document.cookie = 'USERNAME=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+export function setName(value: string) {
+  var expires = "";
+  var date = new Date();
+  // 12 days expiration
+  date.setTime(date.getTime() + (12 *24*60*60*1000));
+  expires = "; expires=" + date.toUTCString();
+  document.cookie = "NAME=" + value  + expires + "; path=/";
+}
+
+export function getName(): string | null {
+  var nameEQ = "NAME=";
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
+export function eraseName() {   
+  document.cookie = 'NAME=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }

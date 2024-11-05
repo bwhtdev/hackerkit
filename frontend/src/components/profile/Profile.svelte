@@ -6,6 +6,9 @@
   interface User {
     id: string;
     username: string;
+    name: string;
+    avatar: string;
+    description: string;
     createdAt: string;
   }
   
@@ -22,7 +25,9 @@
 {:then user}
   {#if !user.error}
     <div>
+      <h1>{name}</h1>
       <p>{username} - {new Date(user.createdAt).toDateString()}</p>
+      <img src={user.avatar} width='100' height='100' />
     </div>
 
     {#if $loggedIn && username == $currentUsername}

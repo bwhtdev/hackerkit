@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
-import { setToken, getToken, getUsername, setUsername } from './authUtils';
+import { setToken, getToken, getUsername, setUsername, setName } from './authUtils';
 import { addNewMessage, updateMessage, removeMessage } from '@components/messages/messageStore';
-import { username, loggedIn } from '@components/authStore';
+import { username, name, loggedIn } from '@components/authStore';
 
 document.addEventListener('alpine:init', () => {
 
@@ -9,10 +9,19 @@ document.addEventListener('alpine:init', () => {
   
   Alpine.data('signUpData', () => ({
     signUp() {
+      function genAvatar(username: string) {
+        return `https://www.github.com/${username}.png`;
+      }
+
       // Create new account for user and save cookies
       fetch('/api/v1/sign-up', {
         method: 'POST',
-        body: JSON.stringify({ username: this.username, password: this.password }),
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password,
+          name: this.name,
+          avatar: genAvatar(this.username)
+        }),
         headers: { 'Access-Control-Allow-Origin': '*' }
       })
         //.then(res => res.json())
@@ -47,6 +56,7 @@ document.addEventListener('alpine:init', () => {
           if (data.error) {
             loggedIn.set(true);
             username.set(this.username);
+            name.set(this.name);
 
             this.title = 'User log in unsuccessful!';
             this.type = 'danger';
@@ -54,9 +64,11 @@ document.addEventListener('alpine:init', () => {
           } else {
             loggedIn.set(true);
             username.set(data.username);
+            name.set(data.name);
 
             setToken(data.token);
             setUsername(data.username);
+            setName(data.name);
             
             this.title = 'User log in successful!';
             this.type = 'success';
@@ -81,7 +93,6 @@ document.addEventListener('alpine:init', () => {
       const username = getUsername();
       const token = getToken();
 
-console.log(JSON.stringify({ text: this.messageText, username }));
       fetch(`/api/v1/message/new/${username}`, {
         method: 'POST',
         body: JSON.stringify({ text: this.messageText, username }),

@@ -33,8 +33,11 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 
 	resp := types.LoginResponse{
     ID: acc.ID,
-		Token:  token,
+		Token: token,
 		Username: acc.Username,
+    Name: acc.Name,
+    Avatar: acc.Avatar,
+    Description: acc.Description,
 	}
 
 	return WriteJSON(w, http.StatusOK, resp)
@@ -47,7 +50,7 @@ func (s *APIServer) handleSignUp(w http.ResponseWriter, r *http.Request) error {
       return err
     }
 
-    user, err := types.NewUser(req.Username, req.Password)
+    user, err := types.NewUser(req.Username, req.Name, req.Avatar, req.Password)
     if err != nil {
       return err
     }

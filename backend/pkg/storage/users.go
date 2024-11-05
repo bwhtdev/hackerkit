@@ -12,10 +12,10 @@ func (s *DBStore) CreateUser(user *types.User) (uuid.UUID, error) {
 	var id uuid.UUID
 	
 	query := `INSERT INTO users
-		(username, encrypted_password)
-		VALUES ($1, $2)
+		(username, name, avatar, description, encrypted_password)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id;`
-	err := s.db.QueryRow(query, user.Username, user.EncryptedPassword).Scan(&id)
+	err := s.db.QueryRow(query, user.Username, user.Name, user.Avatar, "", user.EncryptedPassword).Scan(&id)
 	if err != nil {
 		return uuid.New(), err
 	}
@@ -24,13 +24,16 @@ func (s *DBStore) CreateUser(user *types.User) (uuid.UUID, error) {
 
 func (s *DBStore) UpdateUser(user *types.UpdateUserRequest) error {
 	query := `UPDATE users
-	SET username=$2
+	SET username=$2, name=$3, avatar=$4, description=$5
 	WHERE id=$1;`
 
 	_, err := s.db.Query(
 		query,
 		user.ID,
-		user.Username)
+		user.Username,
+    user.Name,
+    user.Avatar,
+    user.Description)
 
 	if err != nil {
 		return err
@@ -47,10 +50,13 @@ func (s *DBStore) DeleteUser(username string) error {
 func scanIntoUser(rows *sql.Rows) (*types.User, error) {
 	user:= new(types.User)
 	err := rows.Scan(
-	    &user.ID,
+    &user.ID,
 		&user.Username,
+    &user.Name,
+    &user.Avatar,
+    &user.Description,
 		&user.EncryptedPassword,
-	    &user.CreatedAt)
+    &user.CreatedAt)
 
 	return user, err
 }

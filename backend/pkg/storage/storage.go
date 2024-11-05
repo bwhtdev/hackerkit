@@ -123,15 +123,15 @@ func (s *DBStore) seedMessage(text, username string) error {
 }
 
 func (s *DBStore) seedUsers() error {
-	err := s.seedUser("user1", "password123")
+  err := s.seedUser("user1", "User1", "https://www.github.com/user1.png", "password123")
 	if err != nil {
 		return err
 	}
-	return s.seedUser("user2", "password123")
+	return s.seedUser("user2", "User1", "https://www.github.com/user2.png", "password123")
 }
 
-func (s *DBStore) seedUser(username, password string) error {
-	user, err := types.NewUser(username, password)
+func (s *DBStore) seedUser(username, name, avatar, password string) error {
+	user, err := types.NewUser(username, name, avatar, password)
 	if err != nil {
 		log.Fatal(err)
 		return err
