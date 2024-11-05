@@ -41,10 +41,9 @@ func (s *APIServer) Run() {
 	r.HandleFunc("/log-in", makeHTTPHandlerFunc(s.handleLogin))
 	r.HandleFunc("/sign-up", makeHTTPHandlerFunc(s.handleSignUp))
 
-	/*r.HandleFunc("/user", makeHTTPHandlerFunc(s.handleUser))
-	r.HandleFunc("/user/id/{id}", makeHTTPHandlerFunc(s.handleUserByID))
-	r.HandleFunc("/user/username/{username}", makeHTTPHandlerFunc(s.handleUserByUsername))*/
-	r.HandleFunc("/delete-account/{username}", withJWTAuth(makeHTTPHandlerFunc(s.handleDeleteAccount)))
+	r.HandleFunc("/user/id/{id}", makeHTTPHandlerFunc(s.handleGetUserById))
+	r.HandleFunc("/user/username/{username}", makeHTTPHandlerFunc(s.handleGetUserByUsername))
+	r.HandleFunc("/user", makeHTTPHandlerFunc(s.handleUser))
 
 
 	// Message handlers:

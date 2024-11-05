@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -13,9 +12,9 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("method not allowed %s", r.Method)
 	}
 
-	var req types.LoginRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		return err
+  _, req, err := GetBodyData[types.LoginRequest](r)
+  if err != nil {
+    return err
 	}
 
 	acc, err := s.store.GetUserByUsername(req.Username)
@@ -33,7 +32,7 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	resp := types.LoginResponse{
-	    ID: acc.ID,
+    ID: acc.ID,
 		Token:  token,
 		Username: acc.Username,
 	}
@@ -43,32 +42,30 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 
 func (s *APIServer) handleSignUp(w http.ResponseWriter, r *http.Request) error {
 	if r.Method == "POST" {
-	    req := new(types.CreateUserRequest)
-	    if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-			return err
-	    }
+    _, req, err := GetBodyData[types.CreateUserRequest](r)
+    if err != nil {
+      return err
+    }
 
-	    user, err := types.NewUser(req.Username, req.Password)
-	    if err != nil {
-	      return err
-	    }
-	    
-		id, err := s.store.CreateUser(user)
-		if err != nil {
-	      return err
-	    }
+    user, err := types.NewUser(req.Username, req.Password)
+    if err != nil {
+      return err
+    }
+    
+    id, err := s.store.CreateUser(user)
+    if err != nil {
+      return err
+    }
 
-	    user.ID = id
+    user.ID = id
 
-	    return WriteJSON(w, http.StatusOK, user)
+    return WriteJSON(w, http.StatusOK, user)
 	}
 
 	return fmt.Errorf("method not allowed %s", r.Method)
 }
 
-//
-
-func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *APIServer) handleDeleteUser(w http.ResponseWriter, r *http.Request) error {
 	username := getID(r, "username")
 
 	if err := s.store.DeleteUser(username); err != nil {
@@ -76,4 +73,48 @@ func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) 
 	}
 
 	return WriteJSON(w, http.StatusOK, map[string]string{"deleted": username})
+}
+
+func (s *APIServer) handleGetUserById(w http.ResponseWriter, r *http.Request) error {
+	id := getID(r, "id")
+	
+	user, err := s.store.GetUserByID(id)
+	if err != nil {
+		return err
+	}
+	
+	return WriteJSON(w, http.StatusOK, user)
+}
+
+func (s *APIServer) handleGetUserByUsername(w http.ResponseWriter, r *http.Request) error {
+	username := getID(r, "username")
+	
+	user, err := s.store.GetUserByUsername(username)
+	if err != nil {
+		return err
+	}
+	
+	return WriteJSON(w, http.StatusOK, user)
+}
+
+func (s *APIServer) handleUser(w http.ResponseWriter, r *http.Request) error {
+	if r.Method == "POST" {
+		return s.handleUpdateUser(w, r)
+	} else if r.Method == "DELETE" {
+		return s.handleDeleteUser(w, r)
+	}
+	return fmt.Errorf("method not allowed %s", r.Method)
+}
+
+func (s *APIServer) handleUpdateUser(w http.ResponseWriter, r *http.Request) error {	
+	_, req, err := GetBodyData[types.UpdateUserRequest](r)
+	if err != nil {
+		return err
+	}
+
+	if err = s.store.UpdateUser(req); err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, req)
 }

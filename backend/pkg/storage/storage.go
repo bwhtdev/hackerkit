@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"log"
-    "math/rand/v2"
+  "math/rand/v2"
 
 	_ "github.com/lib/pq"
 	"github.com/google/uuid"
@@ -19,7 +19,7 @@ type Storage interface {
 	GetUserByID(string) (*types.User, error)
 	GetUserByUsername(string) (*types.User, error)
 	//GetUsers() ([]*types.User, error)
-	UpdateUser(*types.User) error
+	UpdateUser(*types.UpdateUserRequest) error
 	DeleteUser(string) error
 
 	CreateMessage(*types.Message) (uuid.UUID, error)

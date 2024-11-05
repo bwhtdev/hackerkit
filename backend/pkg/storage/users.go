@@ -22,7 +22,7 @@ func (s *DBStore) CreateUser(user *types.User) (uuid.UUID, error) {
 	return id, nil
 }
 
-func (s *DBStore) UpdateUser(user *types.User) error {
+func (s *DBStore) UpdateUser(user *types.UpdateUserRequest) error {
 	query := `UPDATE users
 	SET username=$2
 	WHERE id=$1;`

@@ -25,7 +25,7 @@
 - Deploy to Digital Ocean or another cheap VPS
 - Learn K8s?
 - Add thirdparty OAuth
-- Add dark mode (easy)
+- Add profile page *
 - Implement Stripe payment API
 
 ### Command to prepare env vars

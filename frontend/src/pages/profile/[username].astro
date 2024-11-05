@@ -1,0 +1,15 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Profile from '@components/profile/Profile.svelte';
+
+const { username } = Astro.params;
+---
+
+<Layout title={`${username}'s profile`}>
+  <a href='/'>Back</a>
+
+  <Profile
+    client:load
+    username={username}
+  />
+</Layout>
